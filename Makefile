@@ -125,6 +125,7 @@ endif
 image: $(BINDIR)/BOOTX64.EFI
 	mkdir -p ./$@/EFI/BOOT/
 	cp $< ./$@/EFI/BOOT/BOOTX64.EFI
+	cp ./config/example.cfg ./$@/origami.cfg
 
 # Test it!
 .PHONY: test
