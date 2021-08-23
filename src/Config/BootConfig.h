@@ -11,6 +11,7 @@ typedef struct _ORIGAMI_BOOT_CONFIG
     EFI_SIMPLE_FILE_SYSTEM_PROTOCOL* Fs;
     CHAR16* Path;
     CHAR16* Cmdline;
+    BOOLEAN Tracing;
 } BOOT_ENTRY;
 
 extern BOOT_ENTRY gEntry;

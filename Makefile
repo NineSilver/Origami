@@ -105,32 +105,38 @@ $(BUILDDIR)/%.asm.obj: %.asm
 .PHONY: clean
 clean:
 	rm -rf $(BUILDDIR) $(BINDIR) image
+	make clean -C tests
 
 # Flags for testing with qemu
 QEMU_ARGS += -m 4G -smp 4
 QEMU_ARGS += -machine q35
 QEMU_ARGS += -debugcon stdio
-QEMU_ARGS += -monitor telnet:localhost:4321,server,nowait
 QEMU_ARGS += --no-shutdown
 QEMU_ARGS += --no-reboot
 
 # Workaround for WSL
-ifeq ($(shell uname -r | sed -n 's/.*\( *Microsoft *\).*/\1/p'), Microsoft)
+ifeq ($(shell uname -r | sed -n 's/.*\( *microsoft *\).*/\1/p'), microsoft)
     QEMU := qemu-system-x86_64.exe
 else
     QEMU := qemu-system-x86_64
 endif
 
 # Use an emulated drive as hard disk for qemu
-image: $(BINDIR)/BOOTX64.EFI
+image: $(BINDIR)/BOOTX64.EFI $(BINDIR)/test.elf
 	mkdir -p ./$@/EFI/BOOT/
-	cp $< ./$@/EFI/BOOT/BOOTX64.EFI
+	cp $(BINDIR)/BOOTX64.EFI ./$@/EFI/BOOT/BOOTX64.EFI
+	cp $(BINDIR)/test.elf ./$@/
 	cp ./config/example.cfg ./$@/origami.cfg
 
 # Test it!
 .PHONY: test
 test: image misc/OVMF.fd
 	${QEMU} $(QEMU_ARGS) -bios misc/OVMF.fd -hda fat:rw:image
+
+$(BINDIR)/test.elf:
+	mkdir -p $(@D)
+	make -C tests
+	cp tests/test.elf $@
 
 misc/OVMF.fd:
 	rm -rf misc
