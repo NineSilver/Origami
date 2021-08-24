@@ -601,6 +601,70 @@ InternalAsciiIsHexaDecimalDigitCharacter (
     (Char >= 'a' && Char <= 'f'));
 }
 
+/**
+  Copies up to a specified length one Null-terminated ASCII string to another
+  Null-terminated ASCII string and returns the new ASCII string.
+
+  This function copies the contents of the ASCII string Source to the ASCII
+  string Destination, and returns Destination. At most, Length ASCII characters
+  are copied from Source to Destination. If Length is 0, then Destination is
+  returned unmodified. If Length is greater that the number of ASCII characters
+  in Source, then Destination is padded with Null ASCII characters. If Source
+  and Destination overlap, then the results are undefined.
+  
+  If Destination is NULL, then ASSERT().
+  If Source is NULL, then ASSERT().
+  If Source and Destination overlap, then ASSERT().
+  If PcdMaximumAsciiStringLength is not zero, and Length is greater than
+  PcdMaximumAsciiStringLength, then ASSERT().
+  If PcdMaximumAsciiStringLength is not zero, and Source contains more than
+  PcdMaximumAsciiStringLength ASCII characters, not including the Null-terminator,
+  then ASSERT().
+  
+  @param  Destination A pointer to a Null-terminated ASCII string.
+  @param  Source      A pointer to a Null-terminated ASCII string.
+  @param  Length      The maximum number of ASCII characters to copy.
+  @return Destination
+**/
+CHAR8 *
+EFIAPI
+AsciiStrnCpy (
+  OUT     CHAR8                     *Destination,
+  IN      CONST CHAR8               *Source,
+  IN      UINTN                     Length
+  )
+{
+  CHAR8                             *ReturnValue;
+
+  if (Length == 0) {
+    return Destination;
+  }
+
+  //
+  // Destination cannot be NULL
+  //
+  ASSERT (Destination != NULL);
+
+  //
+  // Destination and source cannot overlap
+  //
+  ASSERT ((UINTN)(Destination - Source) > AsciiStrLen (Source));
+  ASSERT ((UINTN)(Source - Destination) >= Length);
+
+  if (PcdGet32 (PcdMaximumAsciiStringLength) != 0) {
+    ASSERT (Length <= PcdGet32 (PcdMaximumAsciiStringLength));
+  }
+
+  ReturnValue = Destination;
+
+  while (*Source != 0 && Length > 0) {
+    *(Destination++) = *(Source++);
+    Length--;
+  }
+
+  ZeroMem (Destination, Length * sizeof (*Destination));
+  return ReturnValue;
+}
 
 /**
   Returns the length of a Null-terminated ASCII string.

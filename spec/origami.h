@@ -20,6 +20,21 @@ struct origami_header
                                  */
 } __attribute__((packed));
 
+// Origami uses e820 memory map and type; no custom structs
+enum e820_type
+{
+	E820_TYPE_RAM		= 1,
+	E820_TYPE_RESERVED	= 2,
+	E820_TYPE_ACPI		= 3,
+	E820_TYPE_NVS		= 4,
+	E820_TYPE_UNUSABLE	= 5,
+	E820_TYPE_PMEM		= 7,
+
+	E820_TYPE_PRAM		= 12,
+	E820_TYPE_SOFT_RESERVED	= 0xefffffff,
+	E820_TYPE_RESERVED_KERN	= 128,
+};
+
 struct e820_entry
 {
     uint64_t address;
@@ -41,20 +56,20 @@ struct origami_framebuffer
 struct origami_struct
 {
     char bootloader_id[64];     // Must follow the format "<bootloader-name> - <version>"
-    uint8_t opt_info;           /*  Bit 0: firmware (0 for Legacy/BIOS, 1 for UEFI)
+    uint8_t opt_info;           /*  Bit 7: firmware (0 for Legacy/BIOS, 1 for UEFI)
                                  *
                                  *  Following bits are meant only for debugging the behavior of the hardware
                                  *  ========================================================================
-                                 *  Bit 1: framebuffer status (1 found, 0 not found)
-                                 *  Bit 2: whether 5-level paging is enabled or not
-                                 *  Bit 3: 0 if the system doesn't support ACPI (uncommon, as UEFI requires ACPI to work;
+                                 *  Bit 6: framebuffer status (1 found, 0 not found)
+                                 *  Bit 5: reserved
+                                 *  Bit 4: 0 if the system doesn't support ACPI (uncommon, as UEFI requires ACPI to work;
                                  *          mantained for compatibility with *other* bootloaders), 1 otherwise
-                                 *  Bits 4-7 unused
+                                 *  Bits 3-0 unused
                                  */
     
     uint64_t cmdline;            // Info contained in the bootloader config file
 
-    uint64_t mmap_address;       // Memory map address
+    struct e820_entry* memmap;   // Memory map address
     uint64_t mmap_entries;       // Number of memory map entries
     
     uint64_t framebuffer;        // Framebuffer pointer (0 if not requested)

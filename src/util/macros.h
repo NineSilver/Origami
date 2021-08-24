@@ -14,7 +14,7 @@
     do {                            \
         if(EFI_ERROR(expr))         \
         {                           \
-            Print(L"[ERROR] %s\n"); \
+            Print(L"[ERROR] %a\n", message); \
             goto end;               \
         }                           \
     } while(0);

@@ -6,7 +6,7 @@ OBJS := $(SRCS:.c=.o)
 KERNEL = test.elf
 
 CFLAGS = -Wall -Wextra -g -O2
-CHARDFLAGS := $(CFLAGS) \
+KERNELCFLAGS := $(CFLAGS) \
 			-target x86_64-unknown-none \
 			-nostdlib \
 			-ffreestanding \
@@ -17,7 +17,7 @@ CHARDFLAGS := $(CFLAGS) \
 			-mno-sse \
 			-mno-sse2
 
-LDHARDFLAGS := -target x86_64-unknown-none \
+KERNELLDFLAGS := -target x86_64-unknown-none \
 			-O2 \
 			-nostdlib \
 			-static \
@@ -29,10 +29,10 @@ LDHARDFLAGS := -target x86_64-unknown-none \
 all: $(KERNEL)
 
 $(KERNEL): $(OBJS)
-	${CC} $(LDHARDFLAGS) -o $@ $^
+	${CC} $(KERNELLDFLAGS) -o $@ $^
 
-./build/%.o: %.c
-	${CC} $(CHARDFLAGS) -c $< -o $@
+%.o: %.c
+	${CC} $(KERNELCFLAGS) -c $< -o $@
 
 .PHONY: clean
 clean:
