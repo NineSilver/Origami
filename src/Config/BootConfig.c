@@ -70,6 +70,9 @@ static EFI_STATUS LoadBootEntry(EFI_SIMPLE_FILE_SYSTEM_PROTOCOL* FS, BOOT_ENTRY*
         }
         else
         {
+            if(Entry->Name == NULL)
+                continue;
+
             if(CHECK_OPTION(L"PATH") || CHECK_OPTION(L"KERNEL_PATH"))
             {
                 Entry->Path = CopyString(StrStr(Line, L"=") + 1);
