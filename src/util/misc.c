@@ -30,7 +30,6 @@ EFI_STATUS KeyWait(CHAR16* String, ...)
 
     Print(L"\n\n");
 
-end:
     VA_END(Args);
     return Status;
 }
