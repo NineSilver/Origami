@@ -4,6 +4,7 @@
 
 #include "Config/BootConfig.h"
 #include "Loader/Origami.h"
+#include "Menu/Splash.h"
 #include "util/macros.h"
 
 EFI_STATUS EFIAPI UefiBootServicesTableLibConstructor(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE* SystemTable);
@@ -22,13 +23,7 @@ EFI_STATUS EfiMain(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE* SystemTable)
     CHECK_STATUS(DxeDebugLibConstructor(ImageHandle, SystemTable), "An error has been invoked during the execution of the program");
     CHECK_STATUS(BaseRngLibConstructor(), "An error has been invoked during the execution of the program");
 
-    CHECK(SystemTable->ConOut->ClearScreen(SystemTable->ConOut), "An error has been invoked during the execution of the program");
-
-    Print(L"Origami Bootloader - Hello, World!\n");
-    Print(L"==================================\n\n");
-
-    CHECK_STATUS(GetBootEntry(), "An error has been invoked during the execution of the program");
-    CHECK_STATUS(LoadOrigamiKernel(&gEntry), "Error trying to load the kernel");
+    SplashScreen();
 
 end:
     CpuDeadLoop();

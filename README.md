@@ -8,7 +8,7 @@ Origami is a x86_64 UEFI bootloader and boot protocol/specification meant for ho
 - [x] Higher half mapping
 - [x] Custom protocol
 - [x] Runs on baremetal
-- [ ] Boot Menu
+- [X] Boot Menu
 - [ ] KASLR and relocatable kernels support
 - [ ] Level 5 paging
 - [ ] Variable number of boot entries
