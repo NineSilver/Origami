@@ -5,3 +5,6 @@ build
 
 misc
 image
+
+tests/*.o
+tests/*.elf
