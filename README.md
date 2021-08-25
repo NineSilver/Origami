@@ -2,6 +2,17 @@
 
 Origami is a x86_64 UEFI bootloader and boot protocol/specification meant for hobbist kernels, providing modern features like ACPI and KASLR while keeping things ultra-simple. It is inspired in [Stivale](https://github.com/stivale/stivale) boot protocol and in the now archived [TomatBoot](https://github.com/TomatOrg/TomatBoot).
 
+## Features
+
+- [X] Complete ELF load
+- [x] Higher half mapping
+- [x] Custom protocol
+- [x] Runs on baremetal
+- [ ] Boot Menu
+- [ ] KASLR and relocatable kernels support
+- [ ] Level 5 paging
+- [ ] Variable number of boot entries
+
 ## Building
 
 You will need clang and lld; both of them use the LLVM architecture to cross compile apps, which will allow us to link the objects and transform the executable into a EFI app (see the [Makefile](./Makefile) for further information).
@@ -35,7 +46,7 @@ Format an USB drive with FAT32 and follow steps above. Then shutdown your comput
 
 ### Technical information
 
-When the kernel is booted, all the registers are set to 0 except `rdi`, which contains the boot parameters, and `rsp`, which is set to the value of `origami_header.stack`. `gBS->ExitBootServices()` is called just before jumping into the kernel. The kernel must load its own GDT immediately.
+When the kernel is booted, all the registers are set to 0 except `rdi`, which contains the boot parameters according to SysV x86_64 ABI, and `rsp`, which is set to the value of `origami_header.stack`. `gBS->ExitBootServices()` is called just before jumping into the kernel. The kernel must load its own GDT immediately.
 
 ## About the configuration files
 
