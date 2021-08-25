@@ -17,16 +17,16 @@ EFI_STATUS KeyWait(CHAR16* String, ...)
     Print(String, Args);
     Print(L"\n");
 
-    CHECK_STATUS(gST->ConOut->OutputString(gST->ConOut, L"Press any key to continue..."), "Couldn't print to gST Console Output");
+    gST->ConOut->OutputString(gST->ConOut, L"Press any key to continue...");
 
     // Clear keystroke buffer
-    CHECK_STATUS(gST->ConIn->Reset(gST->ConIn, FALSE), "Couldn't reset gST Console Input");
+    gST->ConIn->Reset(gST->ConIn, FALSE);
 
     // Poll for key
     while((Status = (gST->ConIn->ReadKeyStroke(gST->ConIn, &Key))) == EFI_NOT_READY);
 
     // Clear keystroke buffer (this is just a pause)
-    CHECK_STATUS(gST->ConIn->Reset(gST->ConIn, FALSE), "Couldn't reset gST Console Input");
+    gST->ConIn->Reset(gST->ConIn, FALSE);
 
     Print(L"\n\n");
 
