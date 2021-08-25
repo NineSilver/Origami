@@ -9,21 +9,21 @@
 #include "Splash.h"
 
 STATIC CHAR8* BootLogo[] = {
-    "        _____                   /|",
-    "        |   \\      ____        / |",
-    "  __    |    \\    /\\   |      /  ;",
-    " /\\  \\  |     \\  /  \\  |     /  ;",
-    "/,'\\  \\ |      \\/  : \\ |    /   ;",
-    "~  ;   \\|      /   :  \\|   /   ;",
-    "   |    \\     /   :'  |   /    ;",
-    "   |     \\   /    :   |  /    ;                Press Enter to boot",
-    "   |      \\ /    :'   | /     ;                Press ESC to reset the computer",
-    "   |       /     :    |/     ;",
-    "   |      /     :'    |      ;",
-    "    \\    /      :     |     ;",
-    "     \\  /      :'     |     ;",
-    "      \\       :'      |    ;",
-    "       \\______:_______|___;\n",
+    "            _____                   /|",
+    "            |   \\      ____        / |",
+    "      __    |    \\    /\\   |      /  ;",
+    "     /\\  \\  |     \\  /  \\  |     /  ;",
+    "    /,'\\  \\ |      \\/  : \\ |    /   ;",
+    "    ~  ;   \\|      /   :  \\|   /   ;",
+    "       |    \\     /   :'  |   /    ;",
+    "       |     \\   /    :   |  /    ;              Press Enter to boot",
+    "       |      \\ /    :'   | /     ;              Press ESC to reset the machine",
+    "       |       /     :    |/     ;",
+    "       |      /     :'    |      ;",
+    "        \\    /      :     |     ;",
+    "         \\  /      :'     |     ;",
+    "          \\       :'      |    ;",
+    "           \\______:_______|___;\n",
 };
 
 EFI_STATUS SplashScreen()
@@ -34,7 +34,7 @@ EFI_STATUS SplashScreen()
     gST->ConOut->ClearScreen(gST->ConOut);
 
     gST->ConOut->SetAttribute(gST->ConOut, EFI_RED);
-    Print(L"Origami Bootloader\n\n");
+    Print(L"    Origami Bootloader\n\n");
 
     gST->ConOut->SetAttribute(gST->ConOut, EFI_WHITE);
     for(int i = 0; i < ARRAY_SIZE(BootLogo); i++)
