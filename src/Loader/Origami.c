@@ -83,9 +83,6 @@ EFI_STATUS LoadOrigamiKernel(BOOT_ENTRY* Entry)
     if(Entry->Cmdline != NULL)
         Struct->Cmdline = (UINT64)Entry->Cmdline;
 
-    Print(L"[INFO] Finding framebuffer...\n");
-    DO_IF(KeyWait(L""), Entry->Tracing);
-
     UINTN Width = 0;
     UINTN Height = 0;
     UINTN Scanline = Width;
@@ -141,14 +138,13 @@ EFI_STATUS LoadOrigamiKernel(BOOT_ENTRY* Entry)
         }
         else
         {
-            Print(L"[ERROR] Failed to get system time, setting to 0 instead...\n");
+            Print(L"[ERROR] Failed to get system time, setting to 0 instead...");
         }
 
         DO_IF(KeyWait(L""), Entry->Tracing);
     }
 
-    Print(L"[INFO] Preparing Higher Half\n");
-    DO_IF(KeyWait(L""), Entry->Tracing);
+    Print(L"[INFO] Preparing Higher Half");
 
     IA32_CR0 Cr0 = {.UintN = AsmReadCr0()};
     Cr0.Bits.WP = 0;
@@ -165,7 +161,7 @@ EFI_STATUS LoadOrigamiKernel(BOOT_ENTRY* Entry)
     Pml3High[510] = Pml3Low[0];
     Pml3High[511] = Pml3Low[1];
 
-    Print(L"[INFO] Getting Memory Map...\n");
+    Print(L"[INFO] Getting Memory Map...");
     DO_IF(KeyWait(L""), Entry->Tracing);
 
     gST->ConOut->ClearScreen(gST->ConOut);
