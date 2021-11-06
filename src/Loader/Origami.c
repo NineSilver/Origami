@@ -36,7 +36,8 @@ static enum E820_TYPE EfiTypeToE820Type[] = {
     [EfiBootServicesCode] = E820_TYPE_RAM,
     [EfiBootServicesData] = E820_TYPE_RAM,
     [EfiConventionalMemory] = E820_TYPE_RAM,
-    [EfiACPIMemoryNVS] = E820_TYPE_NVS};
+    [EfiACPIMemoryNVS] = E820_TYPE_NVS
+};
 
 extern VOID EFIAPI JumpToKernel(struct ORIGAMI_STRUCT* Strct, UINT64 Stack, VOID* Entry);
 
@@ -62,11 +63,11 @@ EFI_STATUS LoadOrigamiKernel(BOOT_ENTRY* Entry)
     DO_IF(Print(L" - Stack: %p\n", Header->Stack), Entry->Tracing);
     DO_IF(Print(L" - Framebuffer requested: %a\n", GET_FLAGS_STR(Header, 6)), Entry->Tracing);
     DO_IF(Print(L" - ACPI RSDP requested: %a\n", GET_FLAGS_STR(Header, 3)), Entry->Tracing);
-    DO_IF(Print(L" - UNIX Epoch requested: %a\n", GET_FLAGS_STR(Header, 2)), Entry->Tracing);
-    DO_IF(KeyWait(L""), Entry->Tracing);
+    DO_IF(Print(L" - UNIX Epoch requested: %a\n\n", GET_FLAGS_STR(Header, 2)), Entry->Tracing);
+    DO_IF(KeyWait(), Entry->Tracing);
 
-    Print(L"[INFO] Loading Origami-compliant kernel...");
-    DO_IF(KeyWait(L""), Entry->Tracing);
+    Print(L"[INFO] Loading Origami-compliant kernel...\n");
+    DO_IF(KeyWait(), Entry->Tracing);
 
     ELF_INFO Info = {0};
     CHECK_STATUS(LoadElf(Kernel, &Info, EfiMemoryMappedIOPortSpace), "Couldn't load the kernel image into memory");
@@ -111,21 +112,21 @@ EFI_STATUS LoadOrigamiKernel(BOOT_ENTRY* Entry)
         {
             EFI_ACPI_2_0_ROOT_SYSTEM_DESCRIPTION_POINTER* ActualRsdp = AcpiTable;
             Struct->Rsdp = (UINT64)AllocateReservedCopyPool(ActualRsdp->Length, ActualRsdp);
-            Print(L"[INFO] Got ACPI 2.0 at %p", Struct->Rsdp);
+            Print(L"[INFO] Got ACPI 2.0 at %p\n", Struct->Rsdp);
             Struct->OptInfo |= (1 << 4);
         }
         else if(!EFI_ERROR(EfiGetSystemConfigurationTable(&gEfiAcpi10TableGuid, &AcpiTable)))
         {
             Struct->Rsdp = (UINT64)AllocateReservedCopyPool(sizeof(EFI_ACPI_1_0_ROOT_SYSTEM_DESCRIPTION_POINTER), AcpiTable);
-            Print(L"[INFO] Got ACPI 1.0 at %p", Struct->Rsdp);
+            Print(L"[INFO] Got ACPI 1.0 at %p\n", Struct->Rsdp);
             Struct->OptInfo |= (1 << 4);
         }
         else
         {
-            Print(L"[ERROR] No ACPI Table found, setting to 0 instead...");
+            Print(L"[ERROR] No ACPI Table found, setting to 0 instead...\n");
         }
 
-        DO_IF(KeyWait(L""), Entry->Tracing);
+        DO_IF(KeyWait(), Entry->Tracing);
     }
 
     if(CHECK_BIT(Header->Flags, 2))
@@ -134,17 +135,17 @@ EFI_STATUS LoadOrigamiKernel(BOOT_ENTRY* Entry)
         if(!EFI_ERROR(EfiGetTime(&CurrentTime, NULL)))
         {
             Struct->Epoch = EfiTimeToEpoch(&CurrentTime);
-            Print(L"[INFO] Got epoch %d", Struct->Epoch);
+            Print(L"[INFO] Got epoch %d\n", Struct->Epoch);
         }
         else
         {
-            Print(L"[ERROR] Failed to get system time, setting to 0 instead...");
+            Print(L"[ERROR] Failed to get system time, setting to 0 instead...\n");
         }
 
-        DO_IF(KeyWait(L""), Entry->Tracing);
+        DO_IF(KeyWait(), Entry->Tracing);
     }
 
-    Print(L"[INFO] Preparing Higher Half");
+    Print(L"[INFO] Preparing Higher Half\n");
 
     IA32_CR0 Cr0 = {.UintN = AsmReadCr0()};
     Cr0.Bits.WP = 0;
@@ -161,8 +162,8 @@ EFI_STATUS LoadOrigamiKernel(BOOT_ENTRY* Entry)
     Pml3High[510] = Pml3Low[0];
     Pml3High[511] = Pml3Low[1];
 
-    Print(L"[INFO] Getting Memory Map...");
-    DO_IF(KeyWait(L""), Entry->Tracing);
+    Print(L"[INFO] Getting Memory Map...\n");
+    DO_IF(KeyWait(), Entry->Tracing);
 
     gST->ConOut->ClearScreen(gST->ConOut);
 

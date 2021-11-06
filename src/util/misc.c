@@ -6,16 +6,10 @@
 #include "macros.h"
 #include "misc.h"
 
-EFI_STATUS KeyWait(CHAR16* String, ...)
+EFI_STATUS KeyWait()
 {
     EFI_STATUS Status;
     EFI_INPUT_KEY Key;
-
-    VA_LIST Args;
-    VA_START(Args, String);
-
-    Print(String, Args);
-    Print(L"\n");
 
     gST->ConOut->OutputString(gST->ConOut, L"Press any key to continue...");
 
@@ -29,8 +23,6 @@ EFI_STATUS KeyWait(CHAR16* String, ...)
     gST->ConIn->Reset(gST->ConIn, FALSE);
 
     Print(L"\n\n");
-
-    VA_END(Args);
     return Status;
 }
 
